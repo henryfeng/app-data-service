@@ -1,12 +1,12 @@
 export default abstract class BaseDataService {
 
-    private static serverProxy;
+    private static serverProxy: any;
 
     static setProxy(value: any) {
         BaseDataService.serverProxy = value;
     }
 
-    get service() {
+    get service():any {
         return BaseDataService.serverProxy;
     }
 
@@ -25,7 +25,7 @@ export default abstract class BaseDataService {
      * @param dataProcessor
      */
     async get(url: string, params: any = null, dataProcessor: any = null): Promise<any> {
-        return await this.getService().get(url, params, dataProcessor);
+        return await this.service.get(url, params, dataProcessor);
     }
 
     /**
@@ -36,7 +36,7 @@ export default abstract class BaseDataService {
      * @param dataProcessor
      */
     async post(url: string, data: any, params: any = null, dataProcessor: any = null): Promise<any> {
-        return await this.getService().post(url, data, params, dataProcessor);
+        return await this.service.post(url, data, params, dataProcessor);
     }
 
     /**
@@ -47,7 +47,7 @@ export default abstract class BaseDataService {
      * @param dataProcessor
      */
     async put(url: string, data: any, params: any = null, dataProcessor: any = null): Promise<any> {
-        return await this.getService().put(url, data, params, dataProcessor);
+        return await this.service.put(url, data, params, dataProcessor);
     }
 
     /**
@@ -58,7 +58,7 @@ export default abstract class BaseDataService {
      * @param dataProcessor
      */
     async del(url: string, data: any, params: any = null, dataProcessor: any = null): Promise<any> {
-        return await this.getService().del(url, data, params, dataProcessor);
+        return await this.service.del(url, data, params, dataProcessor);
     }
 
 

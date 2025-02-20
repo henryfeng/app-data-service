@@ -1,6 +1,6 @@
 {
   "name": "@ticatec/app-data-service",
-  "version": "0.7.0",
+  "version": "0.7.4",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
