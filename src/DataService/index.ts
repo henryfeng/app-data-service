@@ -1,6 +1,6 @@
 import CommonDataService from "./CommonDataService";
-import CommonPaginationDataService from "./CommonPaginationDataService";
+import PagingDataService from "./PagingDataService";
 import BaseDataService from "./BaseDataService";
 import FullListDataService from "./FullListDataService";
 
-export {BaseDataService, CommonDataService, CommonPaginationDataService, FullListDataService};
+export {BaseDataService, CommonDataService, PagingDataService, FullListDataService};

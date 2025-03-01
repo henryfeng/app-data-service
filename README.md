@@ -1,160 +1,188 @@
-# DataService
+# Service Classes Usage Guide
+
+[中文文档](./README-CN.md)
+
+This document provides an overview and usage instructions for a set of TypeScript service classes designed to handle data operations via HTTP requests. These classes are built in a hierarchical structure, starting from `BaseDataService` as the foundation, with `CommonDataService`, `PagingDataService`, and `FullListDataService` extending its functionality for specific use cases.
+
+---
 
 ## BaseDataService
-BaseDataService is a TypeScript class that provides a simple template for creating data services in a client-side application. It includes a static property, serverProxy, which can be set to a proxy object that will handle communication with a remote server. The class also includes a protected method, getService(), which returns the serverProxy.
+
+`BaseDataService` is an abstract base class that provides foundational HTTP request methods (GET, POST, PUT, DELETE) and manages a static proxy for making requests.
+
+### Key Features
+- Static proxy configuration for HTTP requests.
+- Basic HTTP method implementations.
+
+### Methods
+- `static setProxy(value: any): void`
+    - Sets the static `serverProxy` used for HTTP requests.
+- `get service(): any`
+    - Getter for accessing the configured `serverProxy`.
+- `protected getService(): any`
+    - Protected method to retrieve the `serverProxy`.
+- `async get(url: string, params?: any, dataProcessor?: any): Promise<any>`
+    - Sends a GET request.
+- `async post(url: string, data: any, params?: any, dataProcessor?: any): Promise<any>`
+    - Sends a POST request.
+- `async put(url: string, data: any, params?: any, dataProcessor?: any): Promise<any>`
+    - Sends a PUT request.
+- `async del(url: string, data?: any, params?: any, dataProcessor?: any): Promise<any>`
+    - Sends a DELETE request.
 
 ### Usage
-To use BaseDataService, you can extend the class and implement your own methods. For example:
 
-```typescript
-import {BaseDataService} from '@ticatec/app-data-service';
+```ts
+import BaseDataService from './BaseDataService';
+import RestService from '@ticatec/axios-restful-service'; // Example proxy
 
-class MyDataService extends BaseDataService {
-  getUsers(): Promise<any[]> {
-    const service = this.getService();
-    return service.get('/users');
-  }
+// Configure the proxy
+const restService = new RestService('https://api.example.com');
+BaseDataService.setProxy(restService);
 
-  updateUser(id: number, data: any): Promise<any> {
-    const service = this.getService();
-    return service.put(`/users/${id}`, data);
+// Extend BaseDataService
+class MyService extends BaseDataService {
+  async fetchData() {
+    return this.get('/data');
   }
 }
+
+const myService = new MyService();
+myService.fetchData().then(data => console.log(data));
 ```
-In this example, MyDataService extends BaseDataService and provides its own implementation for the getUsers() and updateUser() methods. These methods use the getService() method to get a reference to the serverProxy object and then use it to make HTTP requests.
-
-Before you can use MyDataService, you need to set the serverProxy property of BaseDataService. You can do this by calling the setProxy() method:
-
-```typescript
-import axios from 'axios';
-import MyDataService from './MyDataService';
-
-const serverProxy = axios.create({
-  baseURL: 'https://api.example.com'
-});
-
-BaseDataService.setProxy(serverProxy);
-
-const myDataService = new MyDataService();
-```
-In this example, we create a new Axios instance and use it to create the serverProxy. We then set the serverProxy property of BaseDataService to this instance. Finally, we create a new instance of MyDataService and can use it to make requests to our server.
-
-### API
-**BaseDataService.setProxy(value: any)**: void  
-Sets the serverProxy property to the provided value.
-
-**getService()**: any  
-Returns the serverProxy property. This method is marked as protected, so it can only be accessed by classes that extend BaseDataService.
-
 
 ## CommonDataService
 
-CommonDataService is an abstract TypeScript class that extends BaseDataService and provides a set of common data service methods that can be used to interact with a remote server. It includes methods for saving and deleting data.
+`CommonDataService` extends `BaseDataService` and adds common CRUD (Create, Update, Delete) operations with a predefined URL. It is also abstract and intended to be extended.
+
+### Key Features
+* URL-based operations.
+* Methods for saving and deleting data.
+
+### Constructor
+* `constructor(url: string)`
+    * Initializes the service with a base URL.
+
+### Methods
+* `save(data: any, isNew: boolean): Promise<any>`
+  * Saves data using POST (if isNew is true) or PUT (if isNew is false).
+* `remove(item: any): Promise<void>`
+  * Deletes a specific item using the DELETE method.
+* `protected getDeleteUrl(item: any): string`
+  * Returns the URL for deletion (defaults to the base URL; override as needed).
+* `async buildNewEntry(options: any): Promise<any>`
+  * Builds a new data entry based on provided options (returns a shallow copy by default).
 
 ### Usage
-To use CommonDataService, you can extend the class and provide your own implementation for the getDeleteUrl() method. For example:
 
-```typescript
-import {CommonDataService} from '@ticatec/app-data-service';
+```ts
+import CommonDataService from './CommonDataService';
+import RestService from '@ticatec/axios-restful-service';
 
-class MyDataService extends CommonDataService {
+BaseDataService.setProxy(new RestService('https://api.example.com'));
+
+class UserService extends CommonDataService {
   constructor() {
     super('/users');
   }
 
-  getDeleteUrl(item: any): string {
+  // Override getDeleteUrl if needed
+  protected getDeleteUrl(item: any): string {
     return `${this.url}/${item.id}`;
   }
 }
+
+const userService = new UserService();
+userService.save({ name: 'John' }, true).then(response => console.log('Saved:', response));
+userService.remove({ id: 1 }).then(() => console.log('Deleted'));
 ```
-In this example, MyDataService extends CommonDataService and provides its own implementation for the getDeleteUrl() method. This method is used to generate the URL that will be used to delete an item.
 
-To use MyDataService, you can create an instance of the class and use its save() and remove() methods to interact with the server:
+## FullListDataService
 
-```typescript
-const myDataService = new MyDataService();
+`FullListDataService` extends `CommonDataService` and provides a simple method to fetch a full list of data.
 
-// Create a new user
-myDataService.save({ name: 'John Doe', email: 'john.doe@example.com' }, true).then((response) => {
-    console.log('User created:', response.data);
-}).catch((error) => {
-    console.error('Failed to create user:', error);
-});
-
-// Update an existing user
-myDataService.save({ id: 1, name: 'Jane Smith', email: 'jane.smith@example.com' }, false).then((response) => {
-    console.log('User updated:', response.data);
-}).catch((error) => {
-    console.error('Failed to update user:', error);
-});
-
-// Delete a user
-const user = { id: 1, name: 'John Doe', email: 'john.doe@example.com' };
-myDataService.remove(user).then(() => {
-    console.log('User deleted:', user);
-}).catch((error) => {
-    console.error('Failed to delete user:', error);
-});
-```
-In this example, we create a new instance of MyDataService and use its save() and remove() methods to interact with the server. The save() method takes two parameters: the data to be saved and a boolean value indicating whether the data is new or existing. The remove() method takes a single parameter: the item to be deleted.
-
-### API
-**CommonDataService(url: string)**  
-Creates a new instance of CommonDataService with the specified URL.
-
-**save(data: any, isNew: boolean): Promise<any>**  
-Saves the specified data to the server. If isNew is true, a new item will be created. Otherwise, an existing item will be updated.
-
-**remove(item: any): Promise<void>**  
-Deletes the specified item from the server.
-
-**getDeleteUrl(item: any): string**  
-Generates the URL that will be used to delete the specified item. This method is marked as protected, so it can only be accessed by classes that extend CommonDataService.
-
-## CommonPaginationDataService
-CommonPaginationDataService is an abstract TypeScript class that extends CommonDataService and provides a method for searching and paginating data on a remote server.
+### Key Features
+* Specialized for retrieving a complete list of items.
+### Methods
+* `getList(params: any = null): Promise<Array<any>>`
+  * Fetches all data from the specified URL with optional query parameters.
 
 ### Usage
-To use CommonPaginationDataService, you can extend the class and provide your own implementation for the buildCriteria() method. For example:
 
-```typescript
-import {CommonPaginationDataService} from '@ticatec/app-data-service';
+```ts
+import FullListDataService from './FullListDataService';
+import RestService from '@ticatec/axios-restful-service';
 
-class MyPaginationDataService extends CommonPaginationDataService {
-    constructor() {
-    super('/users');
+BaseDataService.setProxy(new RestService('https://api.example.com'));
+
+class ProductService extends FullListDataService {
+  constructor() {
+    super('/products');
+  }
 }
 
-    buildCriteria(): any {
-        return { page: 1, size: 10 };
-    }
+const productService = new ProductService();
+productService.getList({ category: 'electronics' })
+  .then(products => console.log('Products:', products));
+```
+
+## PagingDataService
+
+`PagingDataService` extends `CommonDataService` and adds support for paginated data retrieval with search criteria.
+
+### Key Features
+
+* Paginated data queries.
+* Flexible criteria and result-building methods.
+
+### Methods
+
+* `async search(criteria: any): Promise<PaginationList>`
+  * Queries paginated data based on provided criteria.
+* `protected buildSearchResult(result: any): PaginationList`
+  * Constructs the pagination result (override to customize).
+* `buildCriteria(options?: any): any`
+  * Builds search criteria (returns a shallow copy by default).
+
+### Usage
+
+```ts
+import PagingDataService from './PagingDataService';
+import PaginationList from '../PaginationList';
+import RestService from '@ticatec/axios-restful-service';
+
+BaseDataService.setProxy(new RestService('https://api.example.com'));
+
+class OrderService extends PagingDataService {
+  constructor() {
+    super('/orders');
+  }
+
+  protected buildSearchResult(result: any): PaginationList {
+    return new PaginationList(result.items, result.total, result.page);
+  }
 }
+
+const orderService = new OrderService();
+orderService.search({ status: 'pending', page: 1 })
+  .then(pagination => console.log('Orders:', pagination));
 ```
-In this example, MyPaginationDataService extends CommonPaginationDataService and provides its own implementation for the buildCriteria() method. This method is used to generate the search criteria that will be sent to the server.
 
-To use MyPaginationDataService, you can create an instance of the class and use its search() method to search and paginate data on the server:
 
-```typescript
-const myPaginationDataService = new MyPaginationDataService();
+## Setup and Dependencies
+1. Proxy Configuration: All services rely on a proxy (e.g., `RestService` from `@ticatec/axios-restful-service`) set via `BaseDataService.setProxy()`.
+2. TypeScript: These classes are written in TypeScript and require a compatible environment.
+3. Dependencies: Ensure `@ticatec/enhanced-utils` is installed if using `PagingDataService` (for `utils.objectPurge`).
 
-// Search for users
-myPaginationDataService.search(myPaginationDataService.buildCriteria()).then((paginationList) => {
-    console.log('Users found:', paginationList.data);
-}).catch((error) => {
-    console.error('Failed to search for users:', error);
-});
+### Example Proxy Setup
+
+```ts
+import RestService from '@ticatec/axios-restful-service';
+BaseDataService.setProxy(new RestService('https://api.example.com'));
 ```
-In this example, we create a new instance of MyPaginationDataService and use its search() method to search for and paginate data on the server. The search() method takes a single parameter: the search criteria to be used.
 
-### API
-**CommonPaginationDataService(url: string)**  
-Creates a new instance of CommonPaginationDataService with the specified URL.
-
-**search(criteria: any): Promise<PaginationList>**  
-Searches for and paginates data on the server based on the specified criteria. Returns a Promise that resolves to a PaginationList object containing the search results.
-
-**buildCriteria(): any**  
-Generates the search criteria that will be sent to the server. This method must be implemented by the class that extends CommonPaginationDataService.
-
-
+## Notes
+* **Abstract Classes**: `BaseDataService`, `CommonDataService`, and `PagingDataService` are abstract and must be extended.
+* **Customization**: Override protected methods (e.g., `getDeleteUrl`, `buildSearchResult`) to tailor functionality.
+* **Error Handling**: Implement error handling in your proxy (e.g., `RestService`) or consumer code.
 

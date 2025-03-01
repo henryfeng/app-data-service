@@ -2,7 +2,7 @@ import CommonDataService from "./CommonDataService";
 import PaginationList from "../PaginationList";
 import {utils} from "@ticatec/enhanced-utils";
 
-export default abstract class CommonPaginationDataService extends CommonDataService {
+export default abstract class PagingDataService extends CommonDataService {
 
     /**
      * 根据条件分页查询符合条件的数据
@@ -18,7 +18,7 @@ export default abstract class CommonPaginationDataService extends CommonDataServ
      * @param result
      * @protected
      */
-    protected buildSearchResult(result: PaginationList): PaginationList {
+    protected buildSearchResult(result: any): PaginationList {
         return result;
     }
 
@@ -26,5 +26,7 @@ export default abstract class CommonPaginationDataService extends CommonDataServ
      * 构造查询条件
      * @param options
      */
-    abstract buildCriteria(options?: any): any;
+    buildCriteria(options?: any): any {
+        return {...options}
+    }
 }

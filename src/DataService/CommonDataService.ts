@@ -18,7 +18,7 @@ export default abstract class CommonDataService extends BaseDataService {
         if (isNew) {
             return this.service.post(this.url, data);
         } else {
-            return this.getService().put(this.url, data);
+            return this.service.put(this.url, data);
         }
     }
 
@@ -37,6 +37,10 @@ export default abstract class CommonDataService extends BaseDataService {
      */
     protected getDeleteUrl(item: any): string {
         return this.url;
+    }
+
+    async buildNewEntry(options: any): Promise<any> {
+        return {...options}
     }
 
 }
