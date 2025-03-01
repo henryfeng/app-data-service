@@ -40,15 +40,6 @@ import RestService from '@ticatec/axios-restful-service'; // 示例代理
 const restService = new RestService('https://api.example.com');
 BaseDataService.setProxy(restService);
 
-// 继承 BaseDataService
-class MyService extends BaseDataService {
-  async fetchData() {
-    return this.get('/data');
-  }
-}
-
-const myService = new MyService();
-myService.fetchData().then(data => console.log(data));
 ```
 
 ## CommonDataService

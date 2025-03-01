@@ -40,15 +40,6 @@ import RestService from '@ticatec/axios-restful-service'; // Example proxy
 const restService = new RestService('https://api.example.com');
 BaseDataService.setProxy(restService);
 
-// Extend BaseDataService
-class MyService extends BaseDataService {
-  async fetchData() {
-    return this.get('/data');
-  }
-}
-
-const myService = new MyService();
-myService.fetchData().then(data => console.log(data));
 ```
 
 ## CommonDataService
