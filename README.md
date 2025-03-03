@@ -2,7 +2,7 @@
 
 [中文文档](./README-CN.md)
 
-This document provides an overview and usage instructions for a set of TypeScript service classes designed to handle data operations via HTTP requests. These classes are built in a hierarchical structure, starting from `BaseDataService` as the foundation, with `CommonDataService`, `PagingDataService`, and `FullListDataService` extending its functionality for specific use cases.
+This package provides a set of classes for handling data operations via HTTP requests. These classes are built in a hierarchical structure, starting from `BaseDataService` as the foundation, with `CommonDataService`, `PagingDataService`, and `FullListDataService` extending its functionality for specific use cases.
 
 ---
 

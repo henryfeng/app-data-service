@@ -2,7 +2,7 @@
 
 [English Documentation](./README.md)
 
-本文档提供了一组 TypeScript 服务类的概述和使用说明，这些类用于通过 HTTP 请求处理数据操作。它们以分层结构构建，以 `BaseDataService` 为基础，`CommonDataService`、`PagingDataService` 和 `FullListDataService` 扩展了它的功能，以满足特定的使用场景。
+本软件包提供一些类，用于通过 HTTP 请求处理数据操作。它们以分层结构构建，以 `BaseDataService` 为基础，`CommonDataService`、`PagingDataService` 和 `FullListDataService` 扩展了它的功能，以满足特定的使用场景。
 
 ---
 

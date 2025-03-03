@@ -1,9 +1,22 @@
 {
   "name": "@ticatec/app-data-service",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "description": "This package provides a set of classes for handling data operations via HTTP requests. They are built in a hierarchical structure, with BaseDataService as the foundation, and CommonDataService, PagingDataService, and FullListDataService extending its functionality to cater to specific use cases.",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
+  "keywords": [
+    "typescript",
+    "http",
+    "rest",
+    "crud",
+    "pagination",
+    "data-service",
+    "axios",
+    "api",
+    "async",
+    "proxy"
+  ],
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "npm run clean && tsc && cp ./package.json ./dist/",
@@ -11,5 +24,15 @@
   },
   "devDependencies": {
     "@ticatec/enhanced-utils": "^1.0.1"
-  }
+  },
+  "repository": {
+    "type": "https",
+    "url": "https://github.com/henryfeng/app-data-service.git"
+  },
+  "bugs": {
+    "url": "https://github.com/henryfeng/app-data-service/issues"
+  },
+  "homepage": "https://github.com/henryfeng/app-data-service",
+  "author": "Henry Feng",
+  "license": "MIT"
 }
