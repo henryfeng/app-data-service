@@ -176,3 +176,14 @@ BaseDataService.setProxy(new RestService('https://api.example.com'));
 * **自定义**: 可重写受保护方法（如 `getDeleteUrl`、`buildSearchResult`）以调整功能。
 * **错误处理**: 需在代理（如 `RestService`）或调用代码中实现错误处理。
 
+## 版权信息
+
+Copyright © 2023 Ticatec。保留所有权利。
+
+本类库遵循 MIT 许可证发布。有关许可证的详细信息，请参阅 [LICENSE](LICENSE) 文件。
+
+## 联系方式
+
+huili.f@gmail.com
+
+https://github.com/henryfeng/app-data-service

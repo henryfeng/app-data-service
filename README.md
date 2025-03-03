@@ -177,3 +177,14 @@ BaseDataService.setProxy(new RestService('https://api.example.com'));
 * **Customization**: Override protected methods (e.g., `getDeleteUrl`, `buildSearchResult`) to tailor functionality.
 * **Error Handling**: Implement error handling in your proxy (e.g., `RestService`) or consumer code.
 
+## Copyright Information
+
+Copyright © 2023 Ticatec. All rights reserved.
+
+This library is released under the MIT License. For more details about the license, please refer to the [LICENSE](LICENSE) file.
+
+## Contact Information
+
+huili.f@gmail.com
+
+https://github.com/henryfeng/app-data-service
